@@ -8,9 +8,11 @@ import 'package:interceptor_concept_app/services/http_service_interceptor.dart';
 class HttpService {
 
   final _dio = Dio();
-  
+
 HttpService(){
  _dio.options.baseUrl=AppConfig.baseUrl;
+ _dio.options.connectTimeout = 5000; //5s
+ _dio.options.receiveTimeout = 3000;
  _dio.options.headers = {
     'Content-Type': 'application/json',
   };
@@ -24,7 +26,7 @@ HttpService(){
     Map<String, dynamic>? queryParameters,
   }) async {
     return _dio.post(
-      '/$url',
+      url,
       queryParameters: queryParameters,
       data: body,
     );
@@ -37,7 +39,7 @@ HttpService(){
     Map<String, dynamic>? queryParameters,
   }) async {
     return _dio.put(
-      '/$url',
+      url,
       queryParameters: queryParameters,
       data: body,
     );
@@ -54,7 +56,7 @@ HttpService(){
     String url, {
     Map<String, dynamic>? queryParameters,
   }) async {
-    return await _dio.get('/$url', queryParameters: queryParameters);
+    return await _dio.get(url, queryParameters: queryParameters);
   }
 
   Future<Response> httpGetPagination(

@@ -11,11 +11,12 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Demo',
+      title: 'Interceptor App Demo Concept',
+      debugShowCheckedModeBanner: false,
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: const MyHomePage(title: 'Flutter Demo Home Page'),
+      home: const MyHomePage(title: 'Interceptor App Demo Concept'),
     );
   }
 }
@@ -39,7 +40,6 @@ class _MyHomePageState extends State<MyHomePage> {
 
 
   void _incrementCounter() {
-            data();
     setState(() {
       _counter++;
     });
@@ -54,12 +54,30 @@ class _MyHomePageState extends State<MyHomePage> {
         title: Text(widget.title),
       ),
       body: SingleChildScrollView(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children:_organisationUnits.length < 1 ?  [
-            Text(_counter.toString()),
-          ] : _organisationUnits.map((Dhis2OrganisationUnit orgunit) => Text('Hello')).toList(),
-        ),
+        child: FutureBuilder(
+          builder: (BuildContext context,AsyncSnapshot<dynamic> snapshot){
+            switch(snapshot.connectionState){
+              case (ConnectionState.waiting):
+                return const Center(
+                  child: CircularProgressIndicator(),
+                );
+              case (ConnectionState.done):
+                return Column(
+                  children:_organisationUnits.map((Dhis2OrganisationUnit organisationUnit){
+                    return ListTile(
+                      title: Text(organisationUnit.name ??''),
+                      subtitle: Text(organisationUnit.id ?? ''),
+                    );
+                  }).toList()); 
+                
+              default:
+                return const Center(
+                  child: Text('Error'),
+                );
+            }
+          }
+        
+        , future: data()),
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: _incrementCounter,

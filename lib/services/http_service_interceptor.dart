@@ -4,8 +4,7 @@ import 'package:interceptor_concept_app/services/sharedPreference_helper_service
 
 
 class HttpServiceInterceptor extends Interceptor{
-
-
+  
   @override
   Future onRequest(RequestOptions options, RequestInterceptorHandler handler) async {
    String? username = await SharedPreferenceHelper.getUserToken(key: 'username');
@@ -15,7 +14,9 @@ class HttpServiceInterceptor extends Interceptor{
     options.headers.addAll({
           'Authorization': 'Basic $basicAuth',
              'Content-Type': 'application/json'
-        });        return  super.onRequest(options, handler);
+        });      
+        print(options.headers.toString());
+          return  super.onRequest(options, handler);
     }
     else {
       //get username and password from CurrentUser
@@ -27,7 +28,6 @@ class HttpServiceInterceptor extends Interceptor{
            print(options.headers);
     return  super.onRequest(options, handler);
     }
- 
 
   }
 
@@ -39,7 +39,7 @@ class HttpServiceInterceptor extends Interceptor{
 
   @override
   Future onError(DioError err, ErrorInterceptorHandler handler) async {
-    print("error");
+    print(err);
     super.onError(err, handler);
 
   }
